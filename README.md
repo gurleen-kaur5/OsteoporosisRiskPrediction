@@ -70,24 +70,5 @@ Dataset: **1,958 patient records** containing demographic, lifestyle, and clinic
 - **Model Format:** Serialized CatBoost `.cbm` file  
 - **Frontend:** HTML, CSS, JavaScript — user interface for entering inputs and showing predictions  
 
----
 
-## 💻 Installation and Usage
-
-### 🔧 Prerequisites
-You need **Python 3.7+** installed.
-
-### 📥 Setup Instructions
-
-```bash
-# Clone the repository
-git clone [YOUR_REPO_URL]
-cd [REPO_NAME]
-
-# Create a virtual environment (optional)
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
 
