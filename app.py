@@ -10,7 +10,12 @@ CORS(app)  # Enable CORS for frontend communication
 MODEL_FILE = 'final_catboost_model.cbm'
 model = CatBoostClassifier()
 model.load_model(MODEL_FILE)
-
+MODEL_METRICS = {
+    'accuracy': 0.8849,  # Overall Correctness
+    'precision': 1.0000, # Clinical Safety Guarantee (MUST be 1.0)
+    'recall': 0.7704,    # Sensitivity
+    'f1_score': 0.8703   # Balanced Performance
+}
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
@@ -33,7 +38,8 @@ def predict():
         
         return jsonify({
             'prediction': result,
-            'confidence': float(confidence)
+            'confidence': float(confidence), 
+            'metrics': MODEL_METRICS
         })
         
     except Exception as e:

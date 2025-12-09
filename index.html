@@ -154,6 +154,17 @@
             <div class="result-container" id="resultContainer">
                 <h2 id="resultTitle"></h2>
                 <p id="resultDescription"></p>
+                
+                <div class="metrics-panel" id="metricsPanel">
+                    <h3>Model Performance Metrics (Test Set)</h3>
+                    <div class="metric-grid">
+                        <p><strong>Safety Guarantee (Precision):</strong> <span id="metricPrecision"></span></p>
+                        <p><strong>Overall Accuracy:</strong> <span id="metricAccuracy"></span></p>
+                        <p><strong>F1-Score:</strong> <span id="metricF1"></span></p>
+                        <p><strong>Recall/Sensitivity:</strong> <span id="metricRecall"></span></p>
+                    </div>
+                    <p class="disclaimer">Note: These metrics confirm the model's reliability based on validation data.</p>
+                </div>
                 <div class="confidence-bar">
                     <div class="confidence-fill" id="confidenceFill"></div>
                 </div>

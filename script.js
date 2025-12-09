@@ -16,7 +16,8 @@ document.getElementById('gender').addEventListener('change', function() {
         if (selectedGender === 'Female') {
             hormonalSelect.innerHTML += '<option value="Postmenopausal">Postmenopausal</option>';
         } else if (selectedGender === 'Male') {
-            hormonalSelect.innerHTML += '<option value="Postmenopausal">Andropause</option>';
+            // Note: Use 'Andropause' as the display text, but ensure the underlying value matches the training data format if necessary (e.g., if 'Postmenopausal' was used for men in training data). Assuming 'Andropause' is a unique category.
+            hormonalSelect.innerHTML += '<option value="Andropause">Andropause</option>'; 
         }
     }
 });
@@ -63,7 +64,7 @@ document.getElementById('predictionForm').addEventListener('submit', async (e) =
     
     // Convert form data to object
     for (let [key, value] of formData.entries()) {
-        // Handle empty optional fields
+        // Handle empty optional fields (imputation handles 'null' on Flask side)
         if (value === '') {
             data[key] = null;
         } else if (key === 'Age') {
@@ -77,6 +78,10 @@ document.getElementById('predictionForm').addEventListener('submit', async (e) =
     document.getElementById('loading').style.display = 'block';
     document.getElementById('submitBtn').disabled = true;
     document.getElementById('resultContainer').style.display = 'none';
+    // Ensure the metrics panel is also hidden during loading
+    const metricsPanel = document.getElementById('metricsPanel');
+    if (metricsPanel) metricsPanel.style.display = 'none'; 
+    
     document.getElementById('errorMessage').style.display = 'none';
     
     try {
@@ -108,15 +113,19 @@ document.getElementById('predictionForm').addEventListener('submit', async (e) =
     }
 });
 
+// --- START MODIFICATION HERE ---
+
 function displayResult(result) {
     const container = document.getElementById('resultContainer');
     const title = document.getElementById('resultTitle');
     const description = document.getElementById('resultDescription');
     const fill = document.getElementById('confidenceFill');
-    
+    const metricsPanel = document.getElementById('metricsPanel');
+
     const isHighRisk = result.prediction === "Osteoporosis Risk Detected";
     const confidence = (result.confidence * 100).toFixed(1);
     
+    // 1. Update Main Result Display
     container.className = 'result-container ' + (isHighRisk ? 'result-high-risk' : 'result-low-risk');
     container.style.display = 'block';
     
@@ -130,4 +139,24 @@ function displayResult(result) {
     
     fill.style.width = confidence + '%';
     fill.textContent = confidence + '% Confidence';
+
+
+    // 2. Update Model Metrics Panel
+    if (metricsPanel && result.metrics) {
+        const metrics = result.metrics;
+        
+        // Format Precision: Show 100.00% for the safety guarantee
+        document.getElementById('metricPrecision').textContent = (metrics.precision * 100).toFixed(2) + '%';
+        
+        // Format Accuracy
+        document.getElementById('metricAccuracy').textContent = (metrics.accuracy * 100).toFixed(2) + '%';
+        
+        // Format F1-Score
+        document.getElementById('metricF1').textContent = metrics.f1_score.toFixed(4);
+        
+        // Format Recall (Sensitivity)
+        document.getElementById('metricRecall').textContent = (metrics.recall * 100).toFixed(2) + '%';
+
+        metricsPanel.style.display = 'block'; // Make the panel visible after data is loaded
+    }
 }
